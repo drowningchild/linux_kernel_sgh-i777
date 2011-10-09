@@ -8,8 +8,13 @@
 
 /* How many bits at a time to use.  Valid values are 1, 2, 4, 8, 32 and 64. */
 /* For less performance-sensitive, use 4 */
+<<<<<<< HEAD
 #ifndef CRC_LE_BITS 
 # define CRC_LE_BITS 64
+=======
+#ifndef CRC_LE_BITS
+# define CRC_LE_BITS 8
+>>>>>>> 4d7b7a1... crc32-remove-trailing-whitespace.diff
 #endif
 #ifndef CRC_BE_BITS
 # define CRC_BE_BITS 64
