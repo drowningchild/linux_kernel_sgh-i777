@@ -102,12 +102,9 @@ extern struct cred init_cred;
 # define INIT_PERF_EVENTS(tsk)
 #endif
 
-<<<<<<< HEAD
 #define TIMER_SLACK_NS_DEFAULT 50000
 
-=======
 #define INIT_TASK_COMM "swapper"
->>>>>>> 2861efe... kernel: Set the command name of the idle tasks in SMP kernels v3
 /*
  *  INIT_TASK is used to set up the first task table, touch at
  * your own risk!. Base=0, limit=0x1fffff (=2MB)
