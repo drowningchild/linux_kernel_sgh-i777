@@ -162,11 +162,15 @@ __secondary_data:
  * registers.
  */
 __enable_mmu:
+<<<<<<< HEAD
 #ifdef CONFIG_ALLOW_CPU_ALIGNMENT
 	bic	r0, r0, #CR_A
 #else
 	orr	r0, r0, #CR_A
 #endif
+=======
+	bic	r0, r0, #CR_A
+>>>>>>> e6bae50... CPU unaligned access path
 #ifdef CONFIG_CPU_DCACHE_DISABLE
 	bic	r0, r0, #CR_C
 #endif

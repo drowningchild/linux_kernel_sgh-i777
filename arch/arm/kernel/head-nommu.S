@@ -65,11 +65,15 @@ __after_proc_init:
 	 * CP15 system control register value returned in r0 from
 	 * the CPU init function.
 	 */
+<<<<<<< HEAD
 #ifdef CONFIG_ALLOW_CPU_ALIGNMENT
 	bic	r0, r0, #CR_A
 #else
 	orr	r0, r0, #CR_A
 #endif
+=======
+	bic	r0, r0, #CR_A
+>>>>>>> e6bae50... CPU unaligned access path
 #ifdef CONFIG_CPU_DCACHE_DISABLE
 	bic	r0, r0, #CR_C
 #endif
