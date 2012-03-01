@@ -712,6 +712,8 @@ static void dhd_suspend_resume_helper(struct dhd_info *dhd, int val)
 	dhdp->in_suspend = val;
 	if (!dhdp->suspend_disable_flag)
 		dhd_set_suspend(val, dhdp);
+	else
+	        printk("bcm4330: early_suspend processing disabled, suspend_disable_flag is set by system.\n");
 	DHD_OS_WAKE_UNLOCK(dhdp);
 }
 
@@ -2389,14 +2391,10 @@ dhd_attach(osl_t *osh, struct dhd_bus *bus, uint bus_hdrlen)
 #endif
 
 #if (defined(CONFIG_MACH_SAMSUNG_P3) && defined(CHECK_CHIP_REV)) || defined(CONFIG_MACH_C1) || defined(CONFIG_MACH_N1)
-	if (g_chipver == 2) {
+	if(g_chipver == 2) {
 		DHD_ERROR(("---------------- CHIP bcm4330_B0 --------------------- \r\n"));
 		strcat(fw_path, "_b0");
 		strcat(nv_path, "_b0");
-	} else if (g_chipver == 4) {
-		DHD_ERROR(("---------------- CHIP bcm4330_B2 --------------------- \r\n"));
-		strcat(fw_path, "_b2");
-		strcat(nv_path, "_b2");
 	}
 #endif
 
@@ -3869,7 +3867,7 @@ write_to_file(uint8 *buf, int size, const char *msg)
 	set_fs(get_ds());
 
 	/* open file to write */
-	sprintf(dump_filename, "/data/log/%s_dump_%u", msg, time_stamp);
+	sprintf(dump_filename, "/data/%s_dump_%u", msg, time_stamp);
 	fp = filp_open(dump_filename, O_WRONLY|O_CREAT, 0640);
 	if (!fp) {
 		printf("%s: open file error %s\n", __FUNCTION__, dump_filename);
