@@ -169,7 +169,7 @@ static int set_trip_temp	= TEMP_TRIPPED_CELCIUS;
 static int set_tq0_temp		= TEMP_TQ0_CELCIUS;
 
 static int set_sampling_rate;
-static int set_cpu_level	= 3;
+static int set_cpu_level	= 5;
 
 static int __init tmu_test_param(char *str)
 {
@@ -365,7 +365,7 @@ static void tmu_mon_timer(struct work_struct *work)
 		pr_info("Current: %d c, Cooling: %d c  Throttling: %d c \
 				Warning: %d c  Tripping: %d c\n",
 			cur_temp, tmu_info->temp->thr_low,
-			TEMP_TROTTLED_CELCIUS,
+	 		TEMP_TROTTLED_CELCIUS,
 			TEMP_WARNING_CELCIUS,
 			TEMP_TRIPPED_CELCIUS);
 	}
@@ -405,7 +405,7 @@ static void tmu_poll_testmode(void)
 	case TMU_STATUS_NORMAL:
 		if (cur_temp <= tmu_info->temp->thr_low) {
 			//cancel_delayed_work(&tmu_info->polling_work);
-			if (tmu_tripped_cb(TMU_STATUS_NORMAL) < 0)
+			if (tmu_tripped_cb(TMU_STATUS_NORMAL) < 0) 
 				pr_err("Error inform to battery driver !\n");
 			else
 				pr_info("normal: interrupt enable.\n");
@@ -419,7 +419,7 @@ static void tmu_poll_testmode(void)
 
 		if (cur_temp >= set_thr_temp) { /* 85 */
 			tmu_info->ctz->data.tmu_flag = TMU_STATUS_THROTTLED;
-			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L2);
+			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L4);
 			cpufreq_limited_thr = 1;
 			if (tmu_tripped_cb(TMU_STATUS_THROTTLED) < 0)
 				pr_err("Error inform to battery driver !\n");
@@ -431,7 +431,7 @@ static void tmu_poll_testmode(void)
 
 	case TMU_STATUS_THROTTLED:
 		if (cur_temp >= set_thr_temp && !(cpufreq_limited_thr)) {
-			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L2);
+			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L4);
 			cpufreq_limited_thr = 1;
 			if (tmu_tripped_cb(TMU_STATUS_THROTTLED) < 0)
 				pr_err("Error inform to battery driver !\n");
@@ -451,12 +451,12 @@ static void tmu_poll_testmode(void)
 			tmu_info->ctz->data.tmu_flag = TMU_STATUS_WARNING;
 			s5pv310_cpufreq_upper_limit_free(DVFS_LOCK_ID_TMU);
 			cpufreq_limited_thr = 0;
-			if (set_cpu_level == 3)
+			if (set_cpu_level == 5)
 				s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU,
-						CPU_L3); /* CPU_L3 */
+						CPU_L5); /* CPU_L5 */
 			else
 				s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU,
-						CPU_L4); /* CPU_L4 */
+						CPU_L6); /* CPU_L6 */
 
 			cpufreq_limited_warn = 1;
 			if (tmu_tripped_cb(TMU_STATUS_WARNING) < 0)
@@ -471,12 +471,12 @@ static void tmu_poll_testmode(void)
 		if (cur_temp >= set_warn_temp && !(cpufreq_limited_warn)) { /* 100 */
 			s5pv310_cpufreq_upper_limit_free(DVFS_LOCK_ID_TMU);
 			cpufreq_limited_thr = 0;
-			if (set_cpu_level == 3)
+			if (set_cpu_level == 5)
 				s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU,
-						CPU_L3); /* CPU_L3 */
+						CPU_L5); /* CPU_L5 */
 			else
 				s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU,
-						CPU_L4); /* CPU_L4 */
+						CPU_L6); /* CPU_L6 */
 
 			cpufreq_limited_warn = 1;
 			if (tmu_tripped_cb(TMU_STATUS_WARNING) < 0)
@@ -491,7 +491,7 @@ static void tmu_poll_testmode(void)
 			s5pv310_cpufreq_upper_limit_free(DVFS_LOCK_ID_TMU);
 			cpufreq_limited_warn = 0;
 			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU,
-					CPU_L2); /* CPU_L2 */
+					CPU_L4); /* CPU_L2 */
 			cpufreq_limited_thr = 1;
 			if (tmu_tripped_cb(TMU_STATUS_THROTTLED) < 0)
 				pr_err("Error inform to battery driver !\n");
@@ -612,7 +612,7 @@ static void tmu_poll_timer(struct work_struct *work)
 	switch (tmu_info->ctz->data.tmu_flag) {
 	case TMU_STATUS_NORMAL:
 		if (cur_temp <= tmu_info->temp->thr_low) {
-			if (tmu_tripped_cb(TMU_STATUS_NORMAL) < 0)
+			if (tmu_tripped_cb(TMU_STATUS_NORMAL) < 0) 
 				pr_err("Error inform to battery driver !\n");
 			else
 				pr_info("normal: interrupt enable.\n");
@@ -626,7 +626,7 @@ static void tmu_poll_timer(struct work_struct *work)
 		}
 		if (cur_temp >= TEMP_TROTTLED_CELCIUS) { /* 87 */
 			tmu_info->ctz->data.tmu_flag = TMU_STATUS_THROTTLED;
-			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L2);
+			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L4);
 			cpufreq_limited_thr = 1;
 			if (tmu_tripped_cb(TMU_STATUS_THROTTLED) < 0)
 				pr_err("Error inform to battery driver !\n");
@@ -639,7 +639,7 @@ static void tmu_poll_timer(struct work_struct *work)
 	case TMU_STATUS_THROTTLED:
 		if (cur_temp >= TEMP_TROTTLED_CELCIUS &&
 				!(cpufreq_limited_thr)) {
-			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L2);
+			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L4);
 			cpufreq_limited_thr = 1;
 			if (tmu_tripped_cb(TMU_STATUS_THROTTLED) < 0)
 				pr_err("Error inform to battery driver !\n");
@@ -658,14 +658,14 @@ static void tmu_poll_timer(struct work_struct *work)
 			tmu_info->ctz->data.tmu_flag = TMU_STATUS_WARNING;
 			s5pv310_cpufreq_upper_limit_free(DVFS_LOCK_ID_TMU);
 			cpufreq_limited_thr = 0;
-			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L4); /* CPU_L4 */
+			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L6); /* CPU_L6 */
 			cpufreq_limited_warn = 1;
 			if (tmu_tripped_cb(TMU_STATUS_WARNING) < 0)
 				pr_err("Error inform to battery driver !\n");
 			else
 				pr_info("throttling->warning:\
 						set cpufreq upper limit.\n");
-		}
+		}		
 		break;
 
 	case TMU_STATUS_WARNING:
@@ -673,7 +673,7 @@ static void tmu_poll_timer(struct work_struct *work)
 				!(cpufreq_limited_warn)) { /* 103 */
 			s5pv310_cpufreq_upper_limit_free(DVFS_LOCK_ID_TMU);
 			cpufreq_limited_thr = 0;
-			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L4);
+			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L6);
 
 			cpufreq_limited_warn = 1;
 			if (tmu_tripped_cb(TMU_STATUS_WARNING) < 0)
@@ -685,7 +685,7 @@ static void tmu_poll_timer(struct work_struct *work)
 			tmu_info->ctz->data.tmu_flag = TMU_STATUS_THROTTLED;
 			s5pv310_cpufreq_upper_limit_free(DVFS_LOCK_ID_TMU);
 			cpufreq_limited_warn = 0;
-			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L2);
+			s5pv310_cpufreq_upper_limit(DVFS_LOCK_ID_TMU, CPU_L4);
 			cpufreq_limited_thr = 1;
 			if (tmu_tripped_cb(TMU_STATUS_THROTTLED) < 0)
 				pr_err("Error inform to battery driver !\n");
@@ -749,7 +749,7 @@ static void tmu_poll_timer(struct work_struct *work)
 			tmu_info->ctz->data.tmu_flag = TMU_STATUS_WARNING;
 		} else {
 			tmu_info->ctz->data.tmu_flag = TMU_STATUS_TRIPPED;
-			if (tmu_tripped_cb(TMU_STATUS_TRIPPED) < 0)
+			if (tmu_tripped_cb(TMU_STATUS_TRIPPED) < 0) 
 				pr_err("Error inform to battery driver !\n");
 		}
 		break;
@@ -1041,7 +1041,7 @@ static int s5p_tmu_suspend(struct platform_device *pdev, pm_message_t state)
 {
 	struct s5p_tmu *tz = platform_get_drvdata(pdev);
 
-	/* save tmu register value */
+	/* save tmu register value */ 
 	tmu_info->reg_save[0] = __raw_readl(tz->tmu_base + TMU_CON0);
 	tmu_info->reg_save[1] = __raw_readl(tz->tmu_base + SAMPLING_INTERNAL);
 	tmu_info->reg_save[2] = __raw_readl(tz->tmu_base + CNT_VALUE0);
@@ -1062,7 +1062,7 @@ static int s5p_tmu_resume(struct platform_device *pdev)
 {
 	struct s5p_tmu *tz = platform_get_drvdata(pdev);
 
-	/* save tmu register value */
+	/* save tmu register value */ 
 	__raw_writel(tmu_info->reg_save[0], tz->tmu_base + TMU_CON0);
 	__raw_writel(tmu_info->reg_save[1], tz->tmu_base + SAMPLING_INTERNAL);
 	__raw_writel(tmu_info->reg_save[2], tz->tmu_base + CNT_VALUE0);

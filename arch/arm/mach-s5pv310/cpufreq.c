@@ -1282,7 +1282,9 @@ static int s5pv310_target(struct cpufreq_policy *policy,
 	if ((index < g_cpufreq_limit_level) && check_gov)
 		index = g_cpufreq_limit_level;
 
+
 	if (s5pv310_max_armclk == ARMCLOCK_1600MHZ) {
+
 #ifdef CONFIG_FREQ_STEP_UP_L2_L0
 		/* change L2 -> L0 */
 		if ((index == L0) && (old_index > L4)) {
@@ -2078,7 +2080,7 @@ static int s5pv310_asv_init(void)
 	unsigned long sum_result = 0;
 	unsigned int tmp;
 	unsigned int hpm[LOOP_CNT];
-	static void __iomem * iem_base;
+	static void __iomem *iem_base;
 	struct clk *clk_iec;
 	struct clk *clk_apc;
 	struct clk *clk_hpm;

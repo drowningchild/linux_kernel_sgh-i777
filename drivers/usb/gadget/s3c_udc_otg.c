@@ -1276,13 +1276,12 @@ static int s3c_udc_probe(struct platform_device *pdev)
 	dev->get_usb_mode = s3c_get_usb_mode;
 	dev->change_usb_mode = s3c_change_usb_mode;
 	mutex_init(&dev->mutex);
-#  ifdef CONFIG_USB_HOST_NOTIFY
+
 	if (pdev->dev.platform_data) {
 		dev->ndev = pdev->dev.platform_data;
 		printk("Register host notify driver : %s\n", dev->ndev->name);
 		host_notify_dev_register(dev->ndev);
 	}
-#  endif
 #endif
 	the_controller = dev;
 	platform_set_drvdata(pdev, dev);
@@ -1316,9 +1315,8 @@ static int s3c_udc_remove(struct platform_device *pdev)
 	struct s3c_udc *dev = platform_get_drvdata(pdev);
 
 	DEBUG("%s: %p\n", __func__, pdev);
-#ifdef CONFIG_USB_HOST_NOTIFY
+
 	host_notify_dev_unregister(dev->ndev);
-#endif
 	remove_proc_files();
 	usb_gadget_unregister_driver(dev->driver);
 
@@ -1493,7 +1491,7 @@ static int s3c_change_usb_mode(int mode)
 
 		case USB_CABLE_ATTACHED:
 #ifdef USE_CPUFREQ_LOCK
-			s5pv310_cpufreq_lock(DVFS_LOCK_ID_USB, CPU_L0);
+			s5pv310_cpufreq_lock(DVFS_LOCK_ID_USB, CPU_L2);
 			CSY_DBG_ESS("cpufreq_lock\n");
 #endif
 			retval = s3c_vbus_enable(NULL, 1);
@@ -1526,7 +1524,7 @@ static int s3c_change_usb_mode(int mode)
 
 		case USB_OTGHOST_ATTACHED:
 #ifdef USE_CPUFREQ_LOCK_FOR_OTG_HOST
-			s5pv310_cpufreq_lock(DVFS_LOCK_ID_USB, CPU_L0);
+			s5pv310_cpufreq_lock(DVFS_LOCK_ID_USB, CPU_L2);
 			CSY_DBG_ESS("cpufreq_lock\n");
 #endif
 			if(!atomic_read(&dev->usb_status)!=USB_OTGHOST_ATTACHED) {
