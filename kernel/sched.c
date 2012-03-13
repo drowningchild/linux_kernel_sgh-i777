@@ -75,6 +75,7 @@
 #include <linux/init_task.h>
 #include <linux/cpuacct.h>
 #include <linux/kernel.h>
+#include <linux/sched.h>
 
 #include <asm/tlb.h>
 #include <asm/irq_regs.h>
